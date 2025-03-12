@@ -1,5 +1,5 @@
-import { Checkbox, Paper, Text, Group, ActionIcon } from "@mantine/core";
-import { IconTrash } from "@tabler/icons-react";
+import { Checkbox, Paper, Text, Group, ActionIcon, Flex } from "@mantine/core";
+import { IconTrash, IconEdit } from "@tabler/icons-react";
 
 export interface TodosProps {
   id: string;
@@ -26,7 +26,7 @@ export default function Todos({
         transition: "opacity 0.3s ease",
       }}
     >
-      <Group>
+      <Flex justify="space-between">
         <Group>
           <Checkbox
             checked={completed}
@@ -46,17 +46,22 @@ export default function Todos({
           />
         </Group>
 
-        {onDelete && (
-          <ActionIcon
-            color="red"
-            variant="subtle"
-            onClick={() => onDelete(id)}
-            title="Delete todo"
-          >
-            <IconTrash size={18} />
+        <Group>
+          <ActionIcon color="yellow" variant="subtle">
+            <IconEdit size={18} />
           </ActionIcon>
-        )}
-      </Group>
+          {onDelete && (
+            <ActionIcon
+              color="red"
+              variant="subtle"
+              onClick={() => onDelete(id)}
+              title="Delete todo"
+            >
+              <IconTrash size={18} />
+            </ActionIcon>
+          )}
+        </Group>
+      </Flex>
     </Paper>
   );
 }

@@ -16,11 +16,10 @@ import Todos from "./components/todos";
 
 export interface TodoItem {
   id: string;
-  text: string; // Changed from 'name' to match backend
+  text: string;
   completed: boolean;
 }
 
-// API URL (will point to your Flask backend)
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function Home() {
@@ -28,16 +27,14 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [newTodoText, setNewTodoText] = useState<string>("");
 
-  // Fetch todos from API
   const fetchTodos = async () => {
     try {
       setLoading(true);
       const response = await axios.get<TodoItem[]>(`${API_URL}/api/todos`);
 
-      // Transform the response data if needed (e.g., if field names don't match)
       const transformedData = response.data.map((item) => ({
         id: item.id.toString(),
-        text: item.text, // Assuming backend uses 'text' instead of 'name'
+        text: item.text,
         completed: item.completed,
       }));
 
@@ -93,21 +90,18 @@ export default function Home() {
   // Toggle todo completion status
   const handleToggle = async (id: string, completed: boolean) => {
     try {
-      // Update local state immediately for responsive UI
       setTodos((prevTodos) =>
         prevTodos.map((todo) =>
           todo.id === id ? { ...todo, completed } : todo,
         ),
       );
 
-      // Update on the server
       await axios.patch(`${API_URL}/api/todos/${id}`, {
         completed,
       });
     } catch (error) {
       console.error("Error updating todo:", error);
 
-      // Revert the change if server update fails
       setTodos((prevTodos) =>
         prevTodos.map((todo) =>
           todo.id === id ? { ...todo, completed: !completed } : todo,
@@ -143,12 +137,10 @@ export default function Home() {
     }
   };
 
-  // Load todos on component mount
   useEffect(() => {
     fetchTodos();
   }, []);
 
-  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addTodo();
@@ -186,15 +178,13 @@ export default function Home() {
           No todos yet. Add one above!
         </Title>
       ) : (
-        <Flex direction="column" gap="md" w="100%">
+        <Flex wrap="wrap" gap="md" justify="center">
           {todos.map((todo, index) => (
-            <Flex key={todo.id} align="center" gap="sm" w="100%">
-              <Title order={4} style={{ width: "30px" }}>
-                {index + 1}.
-              </Title>
+            <Flex key={todo.id} align="center" gap="xs" miw="45%">
+              <Title order={4}>{index + 1}.</Title>
               <Todos
                 id={todo.id}
-                name={todo.text} // Note: we use 'name' prop but the data has 'text' field
+                name={todo.text}
                 completed={todo.completed}
                 onToggle={handleToggle}
                 onDelete={() => handleDelete(todo.id)}
